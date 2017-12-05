@@ -2,80 +2,41 @@ package rest.test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.reflections.Reflections;
 
-import rest.cmd.Operation;
+import rest.cmd.Operations;
 
 public class RestTestMain2 {
-	
-	static Map<String, Operation> inst = new HashMap<>();
-	
-	static {
-		Reflections reflections = new Reflections("rest");    
-		for(Class<? extends Operation> clazz : reflections.getSubTypesOf(Operation.class)){
-			try {
-				Constructor<? extends Operation> cons = ConstructorUtils.getAccessibleConstructor(clazz);
 
-				if(cons == null){
-					System.err.format("Can not create instance for '%s'.\n", clazz.getName());
-					continue;
-				}
+	static final Operations OPS = new Operations("rest.v2.cmd");
 
-				Operation op = ConstructorUtils.invokeConstructor(clazz);
-				inst.put(op.keyword(), op);
-			} catch (InstantiationException
-					| IllegalAccessException
-					| NoSuchMethodException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		Log log = LogFactory.getLog("org.apache.http.wire");
-		System.out.println(log.getClass());
-		System.setProperty(".level", "ALL");
-	}
-
-	public static void main(String[] args) throws Exception {
-		File[] files = new File("case").listFiles(p -> !p.getName().startsWith("#"));
-
+	public static void main(String[] args) {
 		Map<String, Object> ctx = new HashMap<>();
 
 		List<String> lines = null;
-		for(File file : files){
-			System.out.println(">> " + file.getPath());
+		for(File file : sample()){
+			try {
+				System.out.println(">> " + file.getPath());
 
-			lines = IOUtils.readLines(new FileInputStream(file), "UTF-8");
-			ctx.clear();
-			get(lines, ctx);
+				lines = IOUtils.readLines(new FileInputStream(file), "UTF-8");
+				ctx.clear();
 
-			MapUtils.verbosePrint(System.out, "context", ctx);
+				OPS.eval(lines, ctx);
+
+				MapUtils.verbosePrint(System.out, "context", ctx);
+			} catch (Exception e) {
+				MapUtils.verbosePrint(System.err, "context", ctx);
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public static void get(List<String> lines, Map<String, Object> ctx) throws Exception{
-		for(String ln : lines){
-			if(ln.isEmpty() || ln.charAt(0) == '#')
-				continue;
-		
-			String[] token = ln.split(" ", 2);
-			Optional<Operation> op = Optional.ofNullable(inst.get(token[0]));
-			Object result = op.orElse(Operation.UNKNOWN).run(token[1], ctx);
-
-//			if(result != null)
-			ctx.put(Operation.RESULT, result);
-		}
+	private static File[] sample(){
+		return new File("case/v2").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
 	}
 }
