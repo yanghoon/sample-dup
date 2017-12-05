@@ -23,7 +23,7 @@ public class RestTestMain {
 	static Map<String, Operation> inst = new HashMap<>();
 	
 	static {
-		Reflections reflections = new Reflections("rest");    
+		Reflections reflections = new Reflections("rest.cmd");    
 		for(Class<? extends Operation> clazz : reflections.getSubTypesOf(Operation.class)){
 			try {
 				Constructor<? extends Operation> cons = ConstructorUtils.getAccessibleConstructor(clazz);
@@ -35,6 +35,8 @@ public class RestTestMain {
 
 				Operation op = ConstructorUtils.invokeConstructor(clazz);
 				inst.put(op.keyword(), op);
+
+				System.out.format("Load operation :: %s / %s\n", op.keyword(), clazz.getName());
 			} catch (InstantiationException
 					| IllegalAccessException
 					| NoSuchMethodException
