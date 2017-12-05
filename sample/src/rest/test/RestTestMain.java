@@ -51,17 +51,20 @@ public class RestTestMain {
 	}
 
 	public static void main(String[] args) throws Exception {
-		File[] files = new File("case").listFiles(p -> !p.getName().startsWith("#"));
+		File[] files = new File("case").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
 
 		Map<String, Object> ctx = new HashMap<>();
 
 		List<String> lines = null;
 		for(File file : files){
+			System.out.println(">> " + file.getPath());
+
 			lines = IOUtils.readLines(new FileInputStream(file), "UTF-8");
+			ctx.clear();
 			get(lines, ctx);
+
+			MapUtils.verbosePrint(System.out, "context", ctx);
 		}
-		
-		MapUtils.verbosePrint(System.out, "context", ctx);
 	}
 
 	public static void get(List<String> lines, Map<String, Object> ctx) throws Exception{
