@@ -67,13 +67,16 @@ public class Operations {
 		
 			// find op
 			String[] token = ln.split(" ", 2);
+			String expr = token.length == 1 ? "" : token[1]; // support op with no args
+
 			Operation op = this.get(token[0], JqOperation.JQ);
-			String expr = JqOperation.JQ.equals(op.keyword()) ? ln : token[1];
+			expr = JqOperation.JQ.equals(op.keyword()) ? ln : expr; // run jq-operation as default
 
 			// execute
 			Object result = op.run(expr, ctx);
 
-			ctx.put(Const.RESULT, result);
+			if(result != null)
+				ctx.put(Const.RESULT, result);
 		}
 	}
 }
