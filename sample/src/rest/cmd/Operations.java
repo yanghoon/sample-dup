@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.reflections.Reflections;
 
 import rest.v2.cmd.Const;
@@ -39,10 +37,6 @@ public class Operations {
 				e.printStackTrace();
 			}
 		}
-		
-		Log log = LogFactory.getLog("org.apache.http.wire");
-		System.out.println(log.getClass());
-		System.setProperty(".level", "ALL");
 	}
 	
 	public Operation get(String... keys){
@@ -70,10 +64,12 @@ public class Operations {
 			String expr = token.length == 1 ? "" : token[1]; // support op with no args
 
 			Operation op = this.get(token[0], JqOperation.JQ);
-			expr = JqOperation.JQ.equals(op.keyword()) ? ln : expr; // run jq-operation as default
+			expr = JqOperation.JQ.equals(op.keyword()) && !JqOperation.JQ.equals(token[0]) ? ln : expr; // run jq-operation as default
 
 			// execute
 			Object result = op.run(expr, ctx);
+
+			ctx.put("res_before", ctx.get(Const.RESULT));
 
 			if(result != null)
 				ctx.put(Const.RESULT, result);

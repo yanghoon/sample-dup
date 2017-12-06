@@ -1,5 +1,6 @@
 package rest.v2.cmd;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class JqOperation implements Operation {
 		JsonQuery q = JsonQueryParser.compile(expr);
 
 		Scope scope = new MapScope(ctx);
+		
 		List<JsonNode> result = q.apply(scope, NullNode.getInstance());
 		
 		if(result != null && result.size() == 1)
@@ -33,8 +35,8 @@ public class JqOperation implements Operation {
 		
 		return result;
 	}
-
-	private static class MapScope extends Scope {
+	
+	public static class MapScope extends Scope {
 		private Map<String, Object> ctx;
 
 		@SuppressWarnings("deprecation")
@@ -60,12 +62,22 @@ public class JqOperation implements Operation {
 
 		public JsonNode getValue(String name) {
 			Object val = ctx.get(name);
+
+			if(val == null)
+				return super.getValue(name);
 			
 			if(val instanceof JsonNode)
 				return (JsonNode) val;
 			
-			if(val == null)
-				return super.getValue(name);
+			if(val instanceof String){
+				try {
+					val = getObjectMapper().readTree(val.toString());
+					ctx.put(name, val);
+					return (JsonNode) val;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 
 			return getObjectMapper().convertValue(val, JsonNode.class);
 		}
