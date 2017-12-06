@@ -1,5 +1,5 @@
 
-SET .base = "https://jsonplaceholder.typicode.com"
+SET .site = "https://jsonplaceholder.typicode.com"
 
 GET /posts
 SET .post = $res[0]
