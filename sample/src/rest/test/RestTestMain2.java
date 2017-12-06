@@ -2,7 +2,7 @@ package rest.test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class RestTestMain2 {
 	static final Operations OPS = new Operations("rest.v2.cmd");
 
 	public static void main(String[] args) {
-		Map<String, Object> ctx = new HashMap<>();
+		Map<String, Object> ctx = new LinkedHashMap<>();
 
 		List<String> lines = null;
 		for(File file : sample()){
@@ -25,6 +25,9 @@ public class RestTestMain2 {
 
 				lines = IOUtils.readLines(new FileInputStream(file), "UTF-8");
 				ctx.clear();
+
+				ctx.put("res_before", null);
+				ctx.put("res", null);
 
 				OPS.eval(lines, ctx);
 
