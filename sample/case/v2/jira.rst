@@ -1,11 +1,11 @@
 ####
 # TODO
 # * $res == current(.)
-# * one-time var : header, query, ...
+# * one-time var : header, query, ...  -->  exchange{property, message:{header, body} }
 # * multi line
 #
 # [DONE]
-# * url operation : append path/param, support jq, ... --> support jq (GET {jq-expr...}/remain?key=val
+# * url operation : append path/param, support jq, ... --> support jq (GET {jq-expr...}/remain?key=val#ctx.key
 # * shorten url : host list like zuul/ribbon --> use ".site" variable
 
 ## by operation
