@@ -5,11 +5,19 @@ JSON의 가공을 위해서 Jq Processor 문법을 지원한다. (오픈소스 J
 # 문법
 XXX는 각각의 라인을 순차적으로 실행한다. (인터프리터 형식)
 각각의 라인은 아래의 구문 중 하나와 대응된다
-1. 라인의 체일 첫 글자가 '#'인 경우는 주석으로 인식한다.
-2. 대문자로 시작하는 Operation와 1개의 인자(argument)로 이루어진다.
-3. 대문자 Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.
+<dl>
+  <dt>Comment<dt/>
+  <dd>라인의 체일 첫 글자가 '#'인 경우는 주석으로 인식한다.</dd>
+
+  <dt>Operation</dt>
+  <dd>대문자로 시작하는 Operation와 1개의 인자(argument)로 이루어진다.</dd>
+  
+  <dt>JQ Expr</dt>
+  <dd>대문자 Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.</dd>
+</dl>
 
 ```
+# Sample
 OPERATION arguments...
 jq expr...
 ```
