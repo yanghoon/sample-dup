@@ -35,22 +35,23 @@ jq expr...
 ### 변수 선언
 변수의 선언을 위해서는 SET Operation을 활용한다. argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 저장한다.
 ### 변수 참조
-위에서 선언된 변수는 jq-expr에서 $name의 형태로 접근 가능하다.
+선언된 변수는 jq-expr에서 `$name`의 형태로 접근 가능하다.
 
-아래는 URL을 변수로 선언하고, GET 요청에서 참조하는 예제이다
-
-    #SET .url = "http://my.rest.com/api"
-     SET {url:"http://my.rest.com/api"}
-     GET {$url}/users
+아래는 url을 변수로 선언하고, GET 요청에서 참조하는 예제이다
+```
+#SET .url = "http://my.rest.com/api"
+ SET {url:"http://my.rest.com/api"}
+ GET {$url}/users
+```
 
 #### res 변수
-XXX는 바로 직전 라인의 실행 결과를 res 변수에 저장하고 있다. 이를 통해 별도의 변수 선언없이, 이전 실행결과를 참조할 수 있다.
-아래는 GET 요청의 결과에서 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
-
-    GET http://my.rest.com/api/users
-        $res | .[] | {id, displayName, gender}
-    SET .user = $res
-
+이전 라인의 실행 결과는 res 변수에 저장된다. 이를 통해 별도의 변수 선언없이, 이전 실행결과를 참조할 수 있다.
+아래는 res 변수를 활용하여, GET 응답의 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
+```
+GET http://my.rest.com/api/users
+    $res | .[] | {id, displayName, gender}
+SET .user = $res
+```
 
 
 ## REST 호출
