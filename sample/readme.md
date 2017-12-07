@@ -54,18 +54,80 @@ SET .user = $res
 ```
 
 
-## REST 호출
+## REST Operation
 ### URL 조합
-XXX는 REST 요청에 사용되는 URL 정보에 대한 가독성을 높이기 위해 다양한 방식의 URL 조합을 지원한다.
+REST Operation은 요청에 대한 가독성을 높이기 위해 URL을 간결하게 작성할 수 있는 조합방식을 지원한다.
 
-### site 변수
-REST Operation에서는 argument가 http로 시작하지 않는 경우, site 변수를 argument의 앞에 자동으로 추가한다.
+<dl>
+  <dt>site 변수</dt>
+  <dd>URL(argument)가 http로 시작하지 않는 경우, `site` 변수를 URL(argument)의 앞에 자동으로 추가한다.</dd>
 
-### headers 변수
-REST 요청 시, headers변수의 내용을 Http Header에 추가한다.
+  <dt>headers 변수</dt>
+  <dd>JSON Object 형식의 headers 변수 내용을 Http Header에 추가한다.</dd>
 
-### querys 변수
-REST 요청 시, querys 변수의 내용을 query string으로 변환하여 추가한다.
+  <dt>querys 변수</dt>
+  <dd>JSON Object 형식의 querys 변수 내용을 Http Query String으로 변환하여 추가한다.</dd>
 
-### jq-expr을 활용한 URL
-argument가 {jq-expr}의 형태로 시작하는 경우, jq-expr의 실행 결과를 URL로 사용하여 REST 요청을 수행한다.
+  <dt>jq-expr</dt>
+  <dd>URL(argument)가 `{jq-expr}`의 형태로 시작하는 경우, jq-expr의 실행 결과를 URL로 사용하여 REST 요청을 수행한다.</dd>
+</dl>
+
+#### 예제
+```
+# Full URL
+GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
+
+# Site Varibale
+SET .site = "https://jsonplaceholder.typicode.com"
+GET /posts?id=2#exp2
+
+# Http Headers
+SET .headers = {Authorization:"Basic MDc3MTM6ZGlkZ25z"}
+GET /posts?id=3#exp3
+
+# Http Query String
+SET .querys = {id: 4}
+GET /posts#exp4
+
+# Http Query String
+SET .url = "https://jsonplaceholder.typicode.com/posts"
+SET .querys = {id:5}
+GET {$url}#exp5
+
+
+#### Result
+ + GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
+   GET https://jsonplaceholder.typicode.com/posts?id=1#exp1 HTTP/1.1
+
+ + SET .site = "https://jsonplaceholder.typicode.com"
+ + GET /posts?id=2#exp2
+   GET https://jsonplaceholder.typicode.com/posts?id=2#exp2 HTTP/1.1
+
+ + SET .headers = {Authorization:"Basic MDc3MTM6ZGlkZ25z"}
+ + GET /posts?id=3#exp3
+   GET https://jsonplaceholder.typicode.com/posts?id=3#exp3 HTTP/1.1
+
+ + SET .querys = {id: 4}
+ + GET /posts#exp4
+   GET https://jsonplaceholder.typicode.com/posts?id=4#exp4 HTTP/1.1
+
+ + SET .url = "https://jsonplaceholder.typicode.com/posts"
+ + SET .querys = {id:5}
+ + GET {$url}#exp5
+   GET https://jsonplaceholder.typicode.com/posts?id=5#exp5 HTTP/1.1
+
+context = 
+{
+    res_before = [{"userId":1,"id":4,"title":"eum et est occaecati","body":"ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit"}]
+    res = [{"userId":1,"id":5,"title":"nesciunt quas odio","body":"repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque"}]
+    site = "https://jsonplaceholder.typicode.com"
+    headers = {"Authorization":"Basic MDc3MTM6ZGlkZ25z"}
+    querys = {"id":5}
+    url = "https://jsonplaceholder.typicode.com/posts"
+    exp1 = [{"userId":1,"id":1,"title":"sunt aut facere repellat provident occaecati excepturi optio reprehenderit","body":"quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"}]
+    exp2 = [{"userId":1,"id":2,"title":"qui est esse","body":"est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"}]
+    exp3 = [{"userId":1,"id":3,"title":"ea molestias quasi exercitationem repellat qui ipsa sit aut","body":"et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"}]
+    exp4 = [{"userId":1,"id":4,"title":"eum et est occaecati","body":"ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit"}]
+    exp5 = [{"userId":1,"id":5,"title":"nesciunt quas odio","body":"repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque"}]
+}
+```
