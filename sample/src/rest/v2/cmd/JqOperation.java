@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.collect.Lists;
 
 import net.thisptr.jackson.jq.Function;
@@ -52,6 +55,16 @@ public class JqOperation implements Operation {
 				public List<JsonNode> apply(Scope scope, List<JsonQuery> args, JsonNode in) throws JsonQueryException {
 					scope.setValue(args.get(0).toString(), in);
 					return Lists.newArrayList(in);
+				}
+			});
+
+			this.addFunction("base64", new Function() {
+				public List<JsonNode> apply(Scope scope, List<JsonQuery> args, JsonNode in) throws JsonQueryException {
+					String source = in.textValue();
+					byte[] encoded = Base64.encodeBase64(source.getBytes());
+					TextNode node = new TextNode(new String(encoded));
+
+					return Lists.newArrayList(node);
 				}
 			});
 		}

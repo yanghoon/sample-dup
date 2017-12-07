@@ -1,0 +1,12 @@
+
+
+#ASSUME: $model from external context
+SET .model = {key:"XTEST", name:"tester", lead:"admin"}
+
+## start of code
+# expand $model with default key/value.
+SET .querys = $model + {projectTypeKey:"software", assigneeType:"PROJECT_LEAD"}
+#SET .headers = {Authorization: ("Basic " + ("admin:admin" | base64)) }
+SET .headers = {Authorization: "Basic YWRtaW46YWRtaW4=" }
+
+POST https://test.skdevops.com/mytask/rest/api/2/project
