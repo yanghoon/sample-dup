@@ -14,7 +14,7 @@ JSON의 가공을 위해서 Jq Processor 문법을 지원한다. (오픈소스 J
   <dd>라인의 제일 첫 글자가 `#`인 경우는 주석으로 인식한다.</dd>
 
   <dt>Operation</dt>
-  <dd>대문자로 구성(Uppercase)된 연산자(Operation)와 1개의 인자(argument)로 이루어진다.</dd>
+  <dd>대문자로 구성(uppercase)된 연산자(Operation)와 1개의 인자(argument)로 이루어진다.</dd>
   
   <dt>JQ Expr</dt>
   <dd>Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.</dd>
