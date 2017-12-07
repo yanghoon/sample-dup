@@ -38,7 +38,7 @@ jq expr...
 
 ## 변수
 ### 변수 선언
-변수의 선언을 위해서는 SET Operation을 활용한다.
+변수의 선언을 위해서는 `SET` Operation을 활용한다.
 
 argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 저장한다.
 ### 변수 참조
@@ -52,11 +52,11 @@ argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 �
 ```
 
 #### res 변수
-이전 라인의 실행 결과는 res 변수에 저장된다.
+이전 라인의 실행 결과는 `res` 변수에 저장된다.
 
 이를 통해 별도의 변수 선언없이, 이전 실행결과를 참조할 수 있다.
 
-아래는 res 변수를 활용하여, GET 응답의 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
+아래는 `res` 변수를 활용하여, GET 응답의 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
 ```
 GET http://my.rest.com/api/users
     $res | .[] | {id, displayName, gender}
