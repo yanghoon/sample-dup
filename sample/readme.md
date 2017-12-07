@@ -9,14 +9,18 @@ XXX는 각각의 라인을 순차적으로 실행한다. (인터프리터 형식
 2. 대문자로 시작하는 Operation와 1개의 인자(argument)로 이루어진다.
 3. 대문자 Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.
 
-    OPERATION arguments...
-    jq expr...
+```
+OPERATION arguments...
+jq expr...
+```
 
 아래는 현재까지 지원되는 Operation의 목록이다
 
-GET url : HTTP GET 요청을 수행한다.
-SET jq-expr : jq-expr를 변수로 저장한다.
-INSPEC : 현재의 변수 목록을 출력한다. 실행결과(res 변수)에 영향을 주지 않는다.
+| Operation | Argument as | Descroption | Note |
+| - | -- | --- | ---- |
+| GET | url | HTTP GET 요청을 수행한다. | |
+| SET | jq-expr | jq-expr를 변수로 저장한다. | |
+| INSPEC | | 현재의 변수 목록을 출력한다.실행결과(res 변수)에 영향을 주지 않는다. | |
 
 
 ## 변수
