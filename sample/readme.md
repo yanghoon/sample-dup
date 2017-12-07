@@ -4,41 +4,54 @@ JSON의 가공을 위해서 Jq Processor 문법을 지원한다. (오픈소스 J
 
 # 문법
 XXX는 각각의 라인을 순차적으로 실행한다. (인터프리터 형식)
-각각의 라인은 아래의 구문 중 하나와 대응된다
-1. 라인의 체일 첫 글자가 '#'인 경우는 주석으로 인식한다.
-2. 대문자로 시작하는 Operation와 1개의 인자(argument)로 이루어진다.
-3. 대문자 Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.
+각각의 라인은 아래의 구문 중 하나와 대응된다.
+<dl>
+  <dt>Comment<dt/>
+  <dd>라인의 체일 첫 글자가 '#'인 경우는 주석으로 인식한다.</dd>
 
-    OPERATION arguments...
-    jq expr...
+  <dt>Operation</dt>
+  <dd>대문자로 시작하는 Operation와 1개의 인자(argument)로 이루어진다.</dd>
+  
+  <dt>JQ Expr</dt>
+  <dd>대문자 Operation으로 시작하지 않는 행은 Jq 문법으로 해석된다.</dd>
+</dl>
+
+```
+# Sample
+OPERATION arguments...
+jq expr...
+```
 
 아래는 현재까지 지원되는 Operation의 목록이다
 
-GET url : HTTP GET 요청을 수행한다.
-SET jq-expr : jq-expr를 변수로 저장한다.
-INSPEC : 현재의 변수 목록을 출력한다. 실행결과(res 변수)에 영향을 주지 않는다.
+| Operation | Argument as | Descroption | Note |
+| - | -- | --- | ---- |
+| GET | url | HTTP GET 요청을 수행한다. | |
+| SET | jq-expr | jq-expr를 변수로 저장한다. | |
+| INSPEC | | 현재의 변수 목록을 출력한다.실행결과(res 변수)에 영향을 주지 않는다. | |
 
 
 ## 변수
 ### 변수 선언
 변수의 선언을 위해서는 SET Operation을 활용한다. argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 저장한다.
 ### 변수 참조
-위에서 선언된 변수는 jq-expr에서 $name의 형태로 접근 가능하다.
+선언된 변수는 jq-expr에서 `$name`의 형태로 접근 가능하다.
 
-아래는 URL을 변수로 선언하고, GET 요청에서 참조하는 예제이다
-
-    #SET .url = "http://my.rest.com/api"
-     SET {url:"http://my.rest.com/api"}
-     GET {$url}/users
+아래는 url을 변수로 선언하고, GET 요청에서 참조하는 예제이다
+```
+#SET .url = "http://my.rest.com/api"
+ SET {url:"http://my.rest.com/api"}
+ GET {$url}/users
+```
 
 #### res 변수
-XXX는 바로 직전 라인의 실행 결과를 res 변수에 저장하고 있다. 이를 통해 별도의 변수 선언없이, 이전 실행결과를 참조할 수 있다.
-아래는 GET 요청의 결과에서 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
-
-    GET http://my.rest.com/api/users
-        $res | .[] | {id, displayName, gender}
-    SET .user = $res
-
+이전 라인의 실행 결과는 res 변수에 저장된다. 이를 통해 별도의 변수 선언없이, 이전 실행결과를 참조할 수 있다.
+아래는 res 변수를 활용하여, GET 응답의 특정 필드만을 추출하여 별도의 변수로 저장하는 예제이다.
+```
+GET http://my.rest.com/api/users
+    $res | .[] | {id, displayName, gender}
+SET .user = $res
+```
 
 
 ## REST 호출
