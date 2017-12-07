@@ -106,6 +106,9 @@ GET {$url}#exp5
 
 
 #### Result
+#### [log format]
+#### + (source line)
+####   (operation log)
  + GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
    GET https://jsonplaceholder.typicode.com/posts?id=1#exp1 HTTP/1.1
 
