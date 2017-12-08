@@ -40,6 +40,6 @@ public class RestTestMain2 {
 	}
 
 	private static File[] sample(){
-		return new File("case/v2/real").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
+		return new File("case/v2").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
 	}
 }

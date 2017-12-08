@@ -1,0 +1,6 @@
+
+SET .site = "https://crowd.com"
+SET .headers = {Accept: "application/json", Authorization: "Basic " + ("application:xxxx" | @base64) }
+SET .querys = {username: "user"}
+
+GET /rest/usermanagement/1/user/group/direct

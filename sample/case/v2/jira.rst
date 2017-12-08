@@ -9,8 +9,8 @@
 # * shorten url : host list like zuul/ribbon --> use ".site" variable
 
 ## by operation
-SET .site = "https://mytask.skcc.com"
-SET .headers = {Authorization:"Basic MDc3MTM6ZGlkZ25z"}
+SET .site = "https://jira.com"
+SET .headers = {Authorization:"Basic " + ("admin:xxxx" | @base64)}
 SET .querys = {maxResults: 10}
 
 
@@ -24,7 +24,7 @@ SET .kanbans = $res
 GET {$kanbans.values[0].self}/configuration#conf
 
 
-## https://mytask.skcc.com/rest/api/2/filter/10412
+## https://jira.com/rest/api/2/filter/100
 SET .querys = {fields: "summary,created,updated,issuetype,status,priority,project,assignee,customfield_10002,customfield_10004"}
 GET {$conf.filter.self}
 GET {$res.searchUrl}

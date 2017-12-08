@@ -1,6 +1,7 @@
 package rest.v2.cmd;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -58,13 +59,14 @@ public class JqOperation implements Operation {
 				}
 			});
 
-			this.addFunction("base64", new Function() {
+			this.addFunction("base64", 0, new Function() {
 				public List<JsonNode> apply(Scope scope, List<JsonQuery> args, JsonNode in) throws JsonQueryException {
 					String source = in.textValue();
 					byte[] encoded = Base64.encodeBase64(source.getBytes());
 					TextNode node = new TextNode(new String(encoded));
 
-					return Lists.newArrayList(node);
+//					return Lists.newArrayList(node);
+					return Collections.<JsonNode> singletonList(node);
 				}
 			});
 		}

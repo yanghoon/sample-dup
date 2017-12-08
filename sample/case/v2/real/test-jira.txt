@@ -5,8 +5,12 @@ SET .model = {key:"XTEST", name:"tester", lead:"admin"}
 
 ## start of code
 # expand $model with default key/value.
+SET .site = "https://jira.com"
 SET .querys = $model + {projectTypeKey:"software", assigneeType:"PROJECT_LEAD"}
-#SET .headers = {Authorization: ("Basic " + ("admin:admin" | base64)) }
-SET .headers = {Authorization: "Basic YWRtaW46YWRtaW4=" }
+SET .headers = {Authorization: "Basic " + ("admin:xxxx" | @base64) }
 
-POST https://test.skdevops.com/mytask/rest/api/2/project
+POST /rest/api/2/project
+SET {id: $res.id, querys: null}
+
+DELETE /rest/api/2/project/{id}
+
