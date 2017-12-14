@@ -13,6 +13,9 @@ import rest.v2.cmd.Const;
 import rest.v2.cmd.JqOperation;
 
 public class Operations {
+	private final String MULTI_LINE = "\"\"";
+	private final int MULTI_LINE_LEN = MULTI_LINE.length();
+
 	private Map<String, Operation> inst = new HashMap<>();
 
 	public Operations(String packaze) {
@@ -53,7 +56,10 @@ public class Operations {
 		if(ctx == null)
 			ctx = new HashMap<>();
 
-		for(String ln : lines){
+		String ln = "";
+		for(int i=0; i<lines.size(); i++){
+			ln = lines.get(i);
+
 			if(ln.isEmpty() || ln.charAt(0) == '#')
 				continue;
 			
@@ -65,6 +71,30 @@ public class Operations {
 
 			Operation op = this.get(token[0], JqOperation.JQ);
 			expr = JqOperation.JQ.equals(op.keyword()) && !JqOperation.JQ.equals(token[0]) ? ln : expr; // run jq-operation as default
+			
+			// detect & merge multi line
+			expr = expr.trim();
+			if(expr.startsWith(MULTI_LINE)){
+				StringBuffer sb = new StringBuffer(expr.substring(MULTI_LINE_LEN));
+				while(i < lines.size()){
+					ln = lines.get(++i);
+					System.out.println(" + " + ln);
+
+					sb.append(" ").append(ln.trim());
+					
+					if(ln.endsWith(MULTI_LINE)){
+						sb.setLength(sb.length() - MULTI_LINE_LEN);
+						expr = sb.toString();
+						break;
+					}
+				}
+				
+				//ERR:: no more input!!
+				if(lines.size() <= i){
+					ctx.put("err_data", sb.toString());
+					throw new IllegalArgumentException("There is no end of multi line command.");
+				}
+			}
 
 			// execute
 			Object result = op.run(expr, ctx);

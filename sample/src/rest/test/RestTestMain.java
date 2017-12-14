@@ -53,7 +53,7 @@ public class RestTestMain {
 	}
 
 	public static void main(String[] args) throws Exception {
-		File[] files = new File("case").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
+		File[] files = new File("case/v1").listFiles(p -> p.isFile() && !p.getName().startsWith("#"));
 
 		Map<String, Object> ctx = new HashMap<>();
 
