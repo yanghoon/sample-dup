@@ -9,8 +9,8 @@
 # * shorten url : host list like zuul/ribbon --> use ".site" variable
 
 ## by operation
-SET .site = "https://jira.com"
-SET .headers = {Authorization:"Basic " + ("admin:xxxx" | @base64)}
+SET .site = "https://mytask.skcc.com"
+SET .headers = {Authorization:"Basic " + ("07713:didgns" | @base64)}
 SET .querys = {maxResults: 10}
 
 
@@ -28,7 +28,7 @@ GET {$kanbans.values[0].self}/configuration#conf
 SET .querys = {fields: "summary,created,updated,issuetype,status,priority,project,assignee,customfield_10002,customfield_10004"}
 GET {$conf.filter.self}
 GET {$res.searchUrl}
-SET .issues = $res.issues[:5]
+SET .issues = $res.issues
 
 
 ## exist about performance
@@ -40,6 +40,7 @@ SET .issues = $res.issues[:5]
 #JQ $res[] + ( $issues[] | .fields.priority | {priorityId:.id, priorityName: .name} )
 #JQ $res[] + ( $issues[] | .fields.assignee | {displayName, key} )
 
+### filter v1
 #""
 #$issues[] |
 #{
@@ -64,27 +65,41 @@ SET .issues = $res.issues[:5]
 #}
 #""
 
+### filter v2
+#$issues[] | { id, key, self } 
+#""
+#$res[] + $issues[] | .fields |
+#  {
+#    name:     .summary,
+#    created:  .created,
+#    updated:  .updated,
+#    typeId:   .issuetype.id,
+#    typeName: .issuetype.name,
+#    statusId:     .status.id,
+#    statusName:   .status.name,
+#    priorityId:   .priority.id,
+#    priorityName: .priority.name
+#  }
+#""
+#$res | map({typeName, statusName, priorityName} | to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 )
+
+### fail to gruop by
+#reduce $res[] as $i ({}; . as $in | ($i.statusName) as $key | . + {($key): $in[$key]} )
+## working at jq.play (https://jqplay.org/jq)
+#reduce $res[] as $i ({}; ["status", $i.statusName] as $p | setpath($p; $i.storypoint//1 + getpath($p) ) )
+
 
 $issues[] | { id, key, self } 
 ""
 $res[] + $issues[] | .fields |
   {
-    name:     .summary,
-    created:  .created,
-    updated:  .updated,
-    typeId:   .issuetype.id,
-    typeName: .issuetype.name
-  }
-  +
-  {
-    statusId:     .status.id,
+    typeName: .issuetype.name,
     statusName:   .status.name,
-    priorityId:   .priority.id,
     priorityName: .priority.name
   }
 ""
+$res | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 )
 
-#reduce $res[] as $i ({}; . as $in | ($i.statusName) as $key | . + {($key): $in[$key]} )
 
-## working at jq.play (https://jqplay.org/jq)
-#reduce $res[] as $i ({}; ["status", $i.statusName] as $p | setpath($p; $i.storypoint//1 + getpath($p) ) )
+# to avoid waste memory
+SET {issues: null, conf: null}
