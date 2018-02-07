@@ -32,7 +32,7 @@ jq expr...
 | Type | Operation | Argument as | Descroption | Note |
 | - | -- | --- | ---- | ----- |
 | http | GET | url | HTTP GET 요청을 수행한다. | |
-| http | POST | jq-expr | jq-expr를 변수로 저장한다. | |
+| http | POST | url | jq-expr를 변수로 저장한다. | |
 | manipulation | SET | jq-expr | jq-expr를 변수로 저장한다. | |
 | manipulation | INSPEC | | 현재의 변수 목록을 출력한다.실행결과(res 변수)에 영향을 주지 않는다. | |
 
@@ -62,6 +62,18 @@ argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 �
 GET http://my.rest.com/api/users
     $res | .[] | {id, displayName, gender}
 SET .user = $res
+```
+
+### Multi-line 문법
+Operation의 Argument가 중복 따옴표("", """)로 시작하면 다음의 여러줄을 하나의 문장으로 인식한다.
+시작과 동일한 수의 중복 따옴표로 한다.
+```
+SET ""
+{
+	post: $res[0],
+	id: $res[0].id
+}
+""
 ```
 
 
@@ -143,5 +155,25 @@ context =
     exp3 = [{"userId":1,"id":3,"title":"ea molestias quasi exercitationem repellat qui ipsa sit aut","body":"et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"}]
     exp4 = [{"userId":1,"id":4,"title":"eum et est occaecati","body":"ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit"}]
     exp5 = [{"userId":1,"id":5,"title":"nesciunt quas odio","body":"repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque"}]
+}
+```
+
+### hash(#) 활용
+http 타입의 Operation에서 url에 포함된 hash 값은 호출 결과의 변수명이 된다.
+
+#### 예제
+```
+# Hash - #exp1
+GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
+
+#### Result
+ + GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
+   GET https://jsonplaceholder.typicode.com/posts?id=1#exp1 HTTP/1.1
+
+context = 
+{
+    res_before = null
+    res = [{"userId":1,"id":1,"title":"sunt aut facere repellat provident occaecati excepturi optio reprehenderit","body":"quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"}]
+    exp1 = [{"userId":1,"id":1,"title":"sunt aut facere repellat provident occaecati excepturi optio reprehenderit","body":"quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"}]
 }
 ```
