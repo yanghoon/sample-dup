@@ -29,7 +29,7 @@ jq expr...
 ### 연산(Operation)
 아래는 현재까지 지원되는 Operation의 목록이다
 
-| Operation | Argument as | Descroption | Note |
+| Type | Operation | Argument as | Descroption | Note |
 | - | -- | --- | ---- | ----- |
 | http | GET | url | HTTP GET 요청을 수행한다. | |
 | http | POST | jq-expr | jq-expr를 변수로 저장한다. | |
