@@ -30,10 +30,11 @@ jq expr...
 아래는 현재까지 지원되는 Operation의 목록이다
 
 | Operation | Argument as | Descroption | Note |
-| - | -- | --- | ---- |
-| GET | url | HTTP GET 요청을 수행한다. | |
-| SET | jq-expr | jq-expr를 변수로 저장한다. | |
-| INSPEC | | 현재의 변수 목록을 출력한다.실행결과(res 변수)에 영향을 주지 않는다. | |
+| - | -- | --- | ---- | ----- |
+| http | GET | url | HTTP GET 요청을 수행한다. | |
+| http | POST | jq-expr | jq-expr를 변수로 저장한다. | |
+| manipulation | SET | jq-expr | jq-expr를 변수로 저장한다. | |
+| manipulation | INSPEC | | 현재의 변수 목록을 출력한다.실행결과(res 변수)에 영향을 주지 않는다. | |
 
 
 ## 변수
