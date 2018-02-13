@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--Import Google Icon Font-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<!--Import jQuery before materialize.js-->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.3/css/materialize.min.css"> <!-- Compiled and minified CSS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.3/js/materialize.min.js"></script> <!-- Compiled and minified JavaScript -->
+
+	<script src='browser/swagger-client.js' type='text/javascript'></script>
+
+	<style type="text/css">
+		/* for select */
+		.no-label-select {
+			margin-top: 0px;
+			margin-bottom: 0px;
+		}
+		.simple-select input.select-dropdown {
+
+		}
+
+		/* for select */
+		.nav-wrapper .dropdown-content {
+
+		}
+
+		/* for data table*/
+		.data-table th:nth-child(1) {
+			width: 5%;
+			text-align: center;
+		}
+
+		.data-table th:nth-child(1) [type="checkbox"]+span {
+			display: inline;
+		}
+
+		.data-table td:nth-child(1) {
+			width: 5%;
+			text-align: center;
+		}
+
+		.data-table td:nth-child(1) [type="checkbox"]+span {
+			display: inline;
+		}
+	</style>
+</head>
+
+<body class="blue-grey lighten-5">
+	<script>
+		$(document).ready(function(){
+			$('select').select();
+			//$('.dropdown-trigger').dropdown();
+
+			var elem = document.querySelector('.dropdown-trigger');
+			var instance = M.Dropdown.init(elem, {});
+		});
+	</script>
+
+	<nav>
+		<div class="nav-wrapper container">
+			<div class="brand-logo">
+				<a href="#" class="dropdown-trigger" data-target='dropdown1'>
+					<i class="material-icons prefix">subject</i>
+				</a>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown1' class='dropdown-content'>
+					<li><a href="#!">one</a></li>
+					<li><a href="#!">two</a></li>
+					<li class="divider"></li>
+					<li><a href="#!">three</a></li>
+					<li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+					<li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+				</ul>
+
+				<span>Logo</span>
+			</div>
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+				<li>Hello, {username}.</li>
+				<li><a href="#logout">Logout</a></li>
+				<li>
+					<a href="#help">
+						<i class="material-icons prefix">help</i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- https://github.com/MicroDroid/vue-materialize-datatable -->
+	<main class="container">
+		<div class="row">
+			<div class="col m12 card">
+				<div class="card-content">
+					<div class="card-title">
+						<h5>
+							Board
+						</h5>
+					</div>
+				<!--
+				<form action="/search">
+					<div class="input-field col s12">
+						<i class="material-icons prefix">search</i>
+						<input id="keyword" name="keyword" type="text" data-length="20"/>
+						<label for="keyword">Board Name</label>
+					</div>
+				</form>
+				-->
+
+				<div class="row">
+					<form class="col s12" action="#">
+						<table class="highlight data-table">
+							<thead>
+								<tr>
+									<th>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</th>
+									<th>Name</th>
+									<th>Item Name</th>
+									<th>Item Price</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</td>
+									<td>Name</td>
+									<td>Item Name</td>
+									<td>Item Price</td>
+								</tr>
+								<tr>
+									<td>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</td>
+									<td>Name</td>
+									<td>Item Name</td>
+									<td>Item Price</td>
+								</tr>
+								<tr>
+									<td>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</td>
+									<td>Name</td>
+									<td>Item Name</td>
+									<td>Item Price</td>
+								</tr>
+								<tr>
+									<td>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</td>
+									<td>Name</td>
+									<td>Item Name</td>
+									<td>Item Price</td>
+								</tr>
+								<tr>
+									<td>
+										<label>
+											<input type="checkbox" class="filled-in"/>
+											<span></span>
+										</label>
+									</td>
+									<td>Name</td>
+									<td>Item Name</td>
+									<td>Item Price</td>
+								</tr>
+							</tbody>
+						</table> 
+					</form>
+				</div>
+
+				<div class="row col s12">
+					<div class="col s2">
+						<ul>
+							<li>
+								<!--
+								<a href="#delete"><i class="material-icons">add_box</i></a>
+								<a href="#delete"><i class="material-icons">add_circle</i></a>
+								<a href="#delete"><i class="material-icons">add</i></a>
+								-->
+								<a href="#new"><i class="material-icons">add_circle_outline</i></a>
+								<a href="#delete"><i class="material-icons">delete</i></a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="col s9 center">
+						<ul class="pagination">
+							<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+							<li class="active"><a href="#!">1</a></li>
+							<li class="waves-effect"><a href="#!">2</a></li>
+							<li class="waves-effect"><a href="#!">3</a></li>
+							<li class="waves-effect"><a href="#!">4</a></li>
+							<li class="waves-effect"><a href="#!">5</a></li>
+							<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+						</ul>
+					</div>
+
+					<form class="col s1">
+						<div class="input-field col s12 no-label-select simple-select">
+							<select>
+								<option value="10" selected>10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+							</select>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+</body>
+</html>

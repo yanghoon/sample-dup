@@ -43,8 +43,8 @@ SET .raw = $res
 $raw | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 )
 SET .sum = $res
 
-group_by(.user) [] | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 ) | reduce . as $i ({}; .[ $i.user | to_entries[].key ] = $i )
-group_by(.user) [] | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 ) | { (.user|keys[0]) : . } 
+#group_by(.user) [] | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 ) | reduce . as $i ({}; .[ $i.user | to_entries[].key ] = $i )
+#group_by(.user) [] | map(to_entries[]) | reduce .[] as $i ({}; .[$i.key][$i.value] += 1 ) | { (.user|keys[0]) : . } 
 
 
 ## to avoid waste memory
