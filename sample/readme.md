@@ -50,6 +50,8 @@ argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 �
 #SET .url = "http://my.rest.com/api"
  SET {url:"http://my.rest.com/api"}
  GET {$url}/users
+   or
+ GET $url/users
 ```
 
 #### res 변수
