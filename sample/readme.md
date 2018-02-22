@@ -91,8 +91,8 @@ REST Operation은 요청에 대한 가독성을 높이기 위해 URL을 간결�
   <dt>querys 변수</dt>
   <dd>JSON Object 형식의 querys 변수 내용을 Http Query String으로 변환하여 추가한다.</dd>
 
-  <dt>jq-var (not yet)</dt>
-  <dd>URL(argument)가 `$`로 시작하는 경우, $jq-var의 값을 URL로 사용하여 REST 요청을 수행한다.</dd>
+  <dt>jq-var</dt>
+  <dd>URL(argument)가 `$`로 시작하는 경우, $jq-var의 값을 URL로 사용하여 REST 요청을 수행한다.</dd>
 
   <dt>jq-expr</dt>
   <dd>URL(argument)가 `{jq-expr}`의 형태로 시작하는 경우, jq-expr의 실행 결과를 URL로 사용하여 REST 요청을 수행한다.</dd>
