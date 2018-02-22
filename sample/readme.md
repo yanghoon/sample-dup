@@ -32,11 +32,11 @@ jq expr...
 | Type | Operation | Argument as | Descroption | Note |
 | - | -- | --- | ---- | ----- |
 | REST Client | GET | url | HTTP GET 요청을 수행한다. | |
-| REST Client | POST | url | HTTP POST 요청을 수행한다. <br/> $querys를 JSON화 하여 HttpBody로 사용한다. | |
+| REST Client | POST | url | HTTP POST 요청을 수행한다. <br/> `$querys`를 JSON화 하여 HttpBody로 사용한다. | |
 | REST Client | DELETE | url | HTTP DELETE 요청을 수행한다. | |
 | REST Server | EXPOSE | path | 현재의 동작을 REST API로 노출한다(Swagger).  | |
-| manipulation | SET | jq-expr | jq-expr를 변수로 저장한다. | |
-| manipulation | INSPEC | | 현재의 변수 목록을 출력한다. <br/> 실행결과(res 변수)에 영향을 주지 않는다. | |
+| manipulation | SET | jq-expr | `jq-expr`를 변수로 저장한다. | |
+| manipulation | INSPEC | | 현재의 변수 목록을 출력한다. <br/> 실행결과(`res` 변수)에 영향을 주지 않는다. | |
 
 
 ## 변수
