@@ -50,8 +50,6 @@ argument의 결과가 Json Object인 경우, 모든 필드를 변수로 각각 �
 #SET .url = "http://my.rest.com/api"
  SET {url:"http://my.rest.com/api"}
  GET {$url}/users
-      or
- GET $url/users
 ```
 
 #### res 변수
@@ -92,15 +90,19 @@ REST Operation은 요청에 대한 가독성을 높이기 위해 URL을 간결�
 
   <dt>querys 변수</dt>
   <dd>JSON Object 형식의 querys 변수 내용을 Http Query String으로 변환하여 추가한다.</dd>
-  
-  <dt>jq-var (not yet)</dt>
+
+  <dt>jq-var (not yet)</dt>
   <dd>URL(argument)가 `$`로 시작하는 경우, $jq-var의 값을 URL로 사용하여 REST 요청을 수행한다.</dd>
-  
+
   <dt>jq-expr</dt>
   <dd>URL(argument)가 `{jq-expr}`의 형태로 시작하는 경우, jq-expr의 실행 결과를 URL로 사용하여 REST 요청을 수행한다.</dd>
 </dl>
 
-#### 예제
+
+### hash(#) 활용
+http 타입의 Operation에서 url에 포함된 hash 값은 호출 결과의 변수명이 된다.
+
+#### 예제 - URL 조합
 ```
 # Full URL
 GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
@@ -163,10 +165,7 @@ context =
 }
 ```
 
-### hash(#) 활용
-http 타입의 Operation에서 url에 포함된 hash 값은 호출 결과의 변수명이 된다.
-
-#### 예제
+#### 예제 - hash(#) 활용
 ```
 # Hash - #exp1
 GET https://jsonplaceholder.typicode.com/posts?id=1#exp1
