@@ -25,4 +25,4 @@ SET ""
     ]
 }
 ""
-POST /SoftLayer_Dns_Domain.json
+#POST /SoftLayer_Dns_Domain.json
