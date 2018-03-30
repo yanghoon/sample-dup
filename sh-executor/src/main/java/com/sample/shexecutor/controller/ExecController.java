@@ -11,6 +11,11 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +32,7 @@ public class ExecController {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@RequestMapping("exec")
-	public String exec(String cmd) throws ExecuteException, IOException{
+	public Object exec(String cmd, String filename) throws ExecuteException, IOException{
 		/*
 		 * https://stackoverflow.com/questions/6295866/how-can-i-capture-the-output-of-a-command-as-a-string-with-commons-exec
 		 * https://commons.apache.org/proper/commons-exec/tutorial.html
@@ -60,7 +65,17 @@ public class ExecController {
 	    exec.setStreamHandler(streamHandler);
 	    exec.execute(commandline);
 
-	    return outputStream.toString("UTF-8");
+	    // response console output as sting
+	    if(StringUtils.isEmpty(filename))
+	    	return outputStream.toString("UTF-8");
+
+	    // response console output as file
+	    HttpHeaders respHeaders = new HttpHeaders();
+	    respHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	    respHeaders.setContentLength(outputStream.size());
+	    respHeaders.setContentDispositionFormData("attachment", filename);
+
+	    return new ResponseEntity<byte[]>(outputStream.toByteArray(), respHeaders, HttpStatus.OK);
 	}
 
 	@RequestMapping("exec-info")

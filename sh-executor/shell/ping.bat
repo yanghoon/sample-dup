@@ -1,1 +1,1 @@
-echo "pong"
+echo pong
