@@ -1,9 +1,15 @@
 # https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html#boot-features-security
 spring:
+  profiles:
+    active: oauth
   security:
     user:
       name: user
       password: user
+#  config:
+#    location: classpath:/google-auth.yaml
 
 info:
   bin: shell/
+  users: 
+    - yanghoon5@gmail.com

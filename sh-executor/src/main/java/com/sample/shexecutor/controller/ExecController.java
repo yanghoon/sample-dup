@@ -10,7 +10,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,14 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sample.shexecutor.conf.ExecInfo;
 
 @RestController
 public class ExecController {
-//	@Value("${conf}")
-//	private Map<String, Object> conf;
-
-	@Value("${info.bin:.}")
-	private String bin = "./";
+//	@Value("${info.bin:.}")
+//	private String bin = "./";
+	
+	@Autowired
+	private ExecInfo info;
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -42,7 +43,7 @@ public class ExecController {
 		 * http://www.baeldung.com/run-shell-command-in-java
 		 */
 		
-		String command = this.bin + cmd;
+		String command = info.getBin() + cmd;
 
 		// not found
 		File shell = new File(command);
@@ -51,7 +52,7 @@ public class ExecController {
 		}
 
 		// invalid path
-		File bin = new File(this.bin);
+		File bin = new File(info.getBin());
 		if(!bin.getAbsolutePath().equals(shell.getParentFile().getAbsolutePath())){
 			return "Invalid path.";
 		}
@@ -83,7 +84,8 @@ public class ExecController {
 	public String path() throws ExecuteException, IOException{
 		Map<String, Object> info = new HashMap<>();
 		
-		info.put("bin", new File(bin).getAbsolutePath().replace('\\', '/'));
+		info.put("bin", new File(this.info.getBin()).getAbsolutePath().replace('\\', '/'));
+		info.put("users", this.info.getMaskedUsers());
 
 	    return mapper.writeValueAsString(info);
 	}
