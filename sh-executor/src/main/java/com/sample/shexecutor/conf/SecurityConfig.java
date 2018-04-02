@@ -16,20 +16,35 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	@SuppressWarnings("unused")
-	private String[] permits = {"/", "/h2-console/**", "favicon.ico", "/login**"};
+	private String[] permits = {
+		"favicon.ico",
+		// -- swagger ui
+		"/swagger-resources/**",
+		"/swagger-ui.html",
+		"/v2/api-docs",
+		"/webjars/**",
+	};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	/*
-    	 * http://www.baeldung.com/spring-security-5-oauth2-login
+    	 * Login
+    	 *   http://www.baeldung.com/spring-security-5-oauth2-login
+    	 *   http://jojoldu.tistory.com/168
+    	 * 
+    	 * Logout
+    	 *   https://docs.spring.io/spring-security/site/docs/current/reference/html/jc.html#jc-logout
+    	 *   https://stackoverflow.com/a/24110187
     	 */
 		http.authorizeRequests()
+			.antMatchers(permits).permitAll()
 			.anyRequest().authenticated()
+			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
 			.and().oauth2Login().successHandler(getSuccessHandler());
     }
 
@@ -57,9 +72,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     		OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) authentication;
     		Map<String, Object> profile = auth.getPrincipal().getAttributes();
     		
-    		System.out.println("login.user.name  = " + authentication.getName());
-    		System.out.println("login.user.name  = " + profile.get("name"));
-    		System.out.println("login.user.email = " + profile.get("email"));
+    		System.out.println("auth.name       = " + authentication.getName());
+    		System.out.println("auth.user.name  = " + profile.get("name"));
+    		System.out.println("auth.user.email = " + profile.get("email"));
     		
     		if( !info.getUsers().contains(profile.get("email")) )
     			throw new RuntimeException("Permission Denied.");
