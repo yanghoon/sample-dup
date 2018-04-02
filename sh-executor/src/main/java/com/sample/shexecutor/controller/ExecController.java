@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +32,8 @@ public class ExecController {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	@RequestMapping("exec")
-	public Object exec(String cmd, String filename) throws ExecuteException, IOException{
+	@RequestMapping("exec/{cmd}")
+	public Object exec(@PathVariable String cmd, String filename) throws ExecuteException, IOException{
 		/*
 		 * https://stackoverflow.com/questions/6295866/how-can-i-capture-the-output-of-a-command-as-a-string-with-commons-exec
 		 * https://commons.apache.org/proper/commons-exec/tutorial.html
@@ -78,7 +79,7 @@ public class ExecController {
 	    return new ResponseEntity<byte[]>(outputStream.toByteArray(), respHeaders, HttpStatus.OK);
 	}
 
-	@RequestMapping("exec-info")
+	@RequestMapping("exec/info")
 	public String path() throws ExecuteException, IOException{
 		Map<String, Object> info = new HashMap<>();
 		

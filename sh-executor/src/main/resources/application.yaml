@@ -1,6 +1,9 @@
-security:
-  username: ssang276
-  password: didgns1!
+# https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html#boot-features-security
+spring:
+  security:
+    user:
+      name: user
+      password: user
 
 info:
   bin: shell/
