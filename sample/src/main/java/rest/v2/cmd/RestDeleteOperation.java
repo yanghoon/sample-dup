@@ -26,6 +26,7 @@ import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import rest.cmd.Operation;
 import rest.util.JsonUtils;
+import rest.util.LogUtil.Log;
 import rest.v2.cmd.JqOperation.MapScope;
 
 public class RestDeleteOperation implements Operation {
@@ -53,7 +54,7 @@ public class RestDeleteOperation implements Operation {
 		HttpDelete delete = new HttpDelete(builder.build());
 		setHeaders(delete, ctx.get(Const.HTTP_HEADERS));
 		
-		System.out.println(Const.LOG_LPAD + delete);
+		Log.println(ctx, delete);
 
 		try {
 			Object res = client.execute(delete, new BasicResponseHandler());
@@ -65,7 +66,7 @@ public class RestDeleteOperation implements Operation {
 			return res;
 		} catch(HttpResponseException e){
 			for(Header h : delete.getAllHeaders()){
-				System.out.println(Const.LOG_LPAD + h.toString());
+				Log.println(ctx, h.toString());
 			}
 			
 			throw e;

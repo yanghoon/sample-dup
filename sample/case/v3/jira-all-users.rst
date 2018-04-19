@@ -9,29 +9,18 @@
 # * multi line
 
 ## Environment Variables
+SET .loopMaxCount = 4
 SET .site = "https://mytask.skcc.com"
 SET .headers = {Authorization:"Basic " + ("07713:didgns" | @base64)}
 
-# init
-SET .all = []
-SET .users = {nextPage: "/rest/api/2/group/member?groupname=jira-users"}
+# merge pagination by nextPage URL
+SET {all: [], users: {nextPage: "/rest/api/2/group/member?groupname=jira-users"} }
+UNTIL $users.nextPage
+  GET {$users.nextPage}#users
+  SET .all = $all + [$res.values[] | {name, email:.emailAddress, displayName}]
+END
 
-#TODO: while ....
-GET {$users.nextPage}#users
-SET .all = $all + [$res.values[] | {name, email:.emailAddress, displayName}]
-
-GET {$users.nextPage}#users
-SET .all = $all + [$res.values[] | {name, email:.emailAddress, displayName}]
-
-GET {$users.nextPage}#users
-SET .all = $all + [$res.values[] | {name, email:.emailAddress, displayName}]
-
+# validation
 SET .all_len = ($all | length)
 SET .all_names = ([$all[] | .name] | unique)
 SET .all_names_len = ($all_names | length)
-
-
-
-# old init
-#GET /rest/api/2/group/member?groupname=jira-users#users
-#SET .all = $all + [$res.values[] | {name, email:.emailAddress, displayName}]

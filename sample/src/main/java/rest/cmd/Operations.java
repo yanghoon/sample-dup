@@ -6,13 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.reflections.Reflections;
 
+import rest.util.LogUtil.Log;
 import rest.v2.cmd.Const;
 import rest.v2.cmd.JqOperation;
 
 public class Operations {
+//	private int loopMaxCount = Integer.MAX_VALUE;
+//	private int loopMaxCount = 5;
+
 	private final String MULTI_LINE = "\"\"";
 	private final int MULTI_LINE_LEN = MULTI_LINE.length();
 
@@ -57,16 +62,16 @@ public class Operations {
 			ctx = new HashMap<>();
 
 		String ln = "";
-		for(int i=0; i<lines.size(); i++){
-			ln = lines.get(i);
+		for(int pc=0; pc<lines.size(); pc++){
+			ln = lines.get(pc);
 
 			if(ln.isEmpty() || ln.charAt(0) == '#')
 				continue;
 			
-			System.out.println(" + " + ln);
+			Log.println(" + ", ln);
 		
 			// find op
-			String[] token = ln.split(" ", 2);
+			String[] token = ln.trim().split(" ", 2);
 			String expr = token.length == 1 ? "" : token[1]; // support op with no args
 
 			Operation op = this.get(token[0], JqOperation.JQ);
@@ -76,9 +81,9 @@ public class Operations {
 			expr = expr.trim();
 			if(expr.startsWith(MULTI_LINE)){
 				StringBuffer sb = new StringBuffer(expr.substring(MULTI_LINE_LEN));
-				while(i < lines.size()){
-					ln = lines.get(++i);
-					System.out.println(" + " + ln);
+				while(pc < lines.size()){
+					ln = lines.get(++pc);
+					Log.println(" + ", ln);
 
 					sb.append(" ").append(ln.trim());
 					
@@ -90,13 +95,60 @@ public class Operations {
 				}
 				
 				//ERR:: no more input!!
-				if(lines.size() <= i){
+				if(lines.size() <= pc){
 					ctx.put("err_data", sb.toString());
 					throw new IllegalArgumentException("There is no end of multi line command.");
 				}
 			}
+			
+			// execute loop
+			if(op instanceof LoopOperation){
+				LoopOperation opCond = LoopOperation.class.cast(op);
+				
+				if(!opCond.isFrom())
+					throw new RuntimeException("Invalid Loop Operation.");
+				
+				int from = pc;
+				int to = pc + 1;
+				for(; to<lines.size(); to++){
+					String opStr = lines.get(to).trim().split(" ", 2)[0];
+
+					if(this.get(opStr) instanceof LoopOperation){
+						LoopOperation opEnd = LoopOperation.class.cast(this.get(opStr));
+						if(opEnd.isTo()){
+							break;
+						} else {
+							lines.subList(from + 1, to + 1).forEach(l -> Log.println(" + ", l));
+							throw new RuntimeException("Can not support nested loop.");
+						}
+					}
+				}
+				
+				if(to == lines.size())
+					throw new RuntimeException("There is no end of loop.");
+				
+				// loop
+				final int MAX = NumberUtils.toInt(String.valueOf(ctx.get(Const.LOOP_MAX_COUNT)), Integer.MAX_VALUE);
+				List<String> loopLines = lines.subList(from + 1, to);
+
+				ctx.put(Const.INDENT_LENGTH, ln.indexOf(token[0]));
+				Object rt = op.run(expr, ctx);
+				for(int k=0; Const.LOOP_TEST_TRUE.equals(rt) && k<MAX; k++){
+					this.eval(loopLines, ctx);
+					
+					ctx.put(Const.INDENT_LENGTH, ln.indexOf(token[0]));
+					Log.println(" + ", ln);
+					rt = op.run(expr, ctx);
+				}
+				
+				Log.println(" + ", lines.get(to));
+				pc = to;
+				continue;
+			}
 
 			// execute
+			ctx.put(Const.INDENT_LENGTH, ln.indexOf(token[0]));
+
 			Object result = op.run(expr, ctx);
 
 			ctx.put("res_before", ctx.get(Const.RESULT));

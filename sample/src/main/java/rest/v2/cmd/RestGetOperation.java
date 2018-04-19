@@ -26,6 +26,7 @@ import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import rest.cmd.Operation;
 import rest.util.JsonUtils;
+import rest.util.LogUtil.Log;
 import rest.v2.cmd.JqOperation.MapScope;
 
 public class RestGetOperation implements Operation {
@@ -53,7 +54,7 @@ public class RestGetOperation implements Operation {
 		HttpGet get = new HttpGet(builder.build());
 		setHeaders(get, ctx.get(Const.HTTP_HEADERS));
 		
-		System.out.println(Const.LOG_LPAD + get);
+		Log.println(ctx, get);
 
 		try {
 			Object res = client.execute(get, new BasicResponseHandler());
@@ -65,7 +66,7 @@ public class RestGetOperation implements Operation {
 			return res;
 		} catch(HttpResponseException e){
 			for(Header h : get.getAllHeaders()){
-				System.out.println(Const.LOG_LPAD + h.toString());
+				Log.println(ctx, h.toString());
 			}
 			
 			throw e;

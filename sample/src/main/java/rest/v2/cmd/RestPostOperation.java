@@ -32,11 +32,12 @@ import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import rest.cmd.Operation;
 import rest.util.JsonUtils;
+import rest.util.LogUtil.Log;
 import rest.v2.cmd.JqOperation.MapScope;
 
 public class RestPostOperation implements Operation {
-	private final String REQ_LPAD = Const.LOG_LPAD + ">> ";
-	private final String RES_LPAD = Const.LOG_LPAD + "<< ";
+	private final String REQ_LPAD = ">> ";
+	private final String RES_LPAD = "<< ";
 	
 	private Pattern p = Pattern.compile("(\\{([^\\}]*)\\})");
 
@@ -65,7 +66,7 @@ public class RestPostOperation implements Operation {
 		setHeaders(post, ctx.get(Const.HTTP_HEADERS));
 		post.setEntity(body);
 		
-		System.out.println(Const.LOG_LPAD + post);
+		Log.println(ctx, post);
 
 		HttpResponse res = null;
 		try {
@@ -84,15 +85,15 @@ public class RestPostOperation implements Operation {
 		} catch(HttpResponseException e){
 			// print request info
 			for(Header h : post.getAllHeaders()){
-				System.out.println(REQ_LPAD + h.toString());
+				Log.println(ctx, REQ_LPAD, h.toString());
 			}
-			System.out.println(REQ_LPAD + EntityUtils.toString(body));
+			Log.println(ctx, REQ_LPAD, EntityUtils.toString(body));
 
 			// print response info
 			if(res != null){
-				System.out.println(RES_LPAD + res.getStatusLine());
-				System.out.println(RES_LPAD + Arrays.toString(res.getAllHeaders()));
-				System.out.println(RES_LPAD + EntityUtils.toString(res.getEntity()));
+				Log.println(ctx, RES_LPAD, res.getStatusLine());
+				Log.println(ctx, RES_LPAD, Arrays.toString(res.getAllHeaders()));
+				Log.println(ctx, RES_LPAD, EntityUtils.toString(res.getEntity()));
 			}
 			
 			throw e;
