@@ -133,14 +133,20 @@ public class Operations {
 
 				ctx.put(Const.INDENT_LENGTH, ln.indexOf(token[0]));
 				Object rt = op.run(expr, ctx);
-				for(int k=0; Const.LOOP_TEST_TRUE.equals(rt) && k<MAX; k++){
+
+				int k = 0;
+				boolean test = Const.LOOP_TEST_TRUE.equals(rt);
+				for(; test && k<MAX; k++){
 					this.eval(loopLines, ctx);
 					
 					ctx.put(Const.INDENT_LENGTH, ln.indexOf(token[0]));
 					Log.println(" + ", ln);
 					rt = op.run(expr, ctx);
+					test = Const.LOOP_TEST_TRUE.equals(rt);
 				}
 				
+				if(test && k == MAX)
+					Log.formatln(ctx, "STOP. The loop count is MAX(%s=%d)", Const.LOOP_MAX_COUNT, MAX);
 				Log.println(" + ", lines.get(to));
 				pc = to;
 				continue;
