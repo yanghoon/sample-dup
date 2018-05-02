@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--Import Google Icon Font-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!--Import materialize.css-->
+	<!-- <link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<style type="text/css">
+		.box {
+			height: 150px;
+
+			line-height: 150px;
+			text-align: center;
+
+			font-size: 40px;
+			color: white;
+		}
+
+		.console {
+			 min-height: 300px;
+			 max-height: 300px;
+		}
+	</style>
+
+	<script>
+		var ctx = {
+			blue: 0,
+			green: 0,
+			delay: 1000, //ms
+			test: false
+		}
+
+		function renderTheme(res){
+			if(ctx.test){
+				res = {color: Math.floor(Math.random() * 2) == 0 ? 'blue' : 'green'};
+				log('Run as test mode.');
+			}
+
+			// handle response
+			var color = (res && res.color) || 'grey';
+			if(!res || !res.color)
+				return log('ERROR [from={0}, res={1}]'.format(color, JSON.stringify(res)));
+
+			// change theme
+			var target = $('#theme').attr('class');
+			$('#theme, .target.'+ target).removeClass(target).addClass(color);
+
+			// update count
+			if(ctx[color] !== undefined)
+				ctx[color] = ctx[color] + 1;
+
+			renderRatio();
+
+			// print log
+			var msg = 'Change color : [from={0}, to={1}, res={2}]'.format(target, color, JSON.stringify(res));
+			log(msg);
+		};
+
+		function renderRatio(){
+			$('#box-blue').html(ctx.blue);
+			$('#box-green').html(ctx.green);
+		}
+
+		function log(msg){
+			var timestamp = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+			msg = "{0} :: {1}\n".format(timestamp, msg);
+			$('.console').prepend(msg);	
+		}
+
+		// https://stackoverflow.com/a/4673436
+		if (!String.prototype.format) {
+			String.prototype.format = function() {
+				var args = arguments;
+				return this.replace(/{(\d+)}/g, function(match, number) { 
+					return typeof args[number] != 'undefined'? args[number] : match;
+				});
+			};
+		}
+	</script>
+
+</head>
+
+<body class="grey lighten-4 target">
+	<!--Import jQuery before materialize.js-->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<!-- <script type="text/javascript" src="js/materialize.min.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+	<!-- https://highlightjs.org/ -->
+	<!-- https://cdnjs.com/libraries/highlight.js/ -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+	<!-- https://momentjs.com/ -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(document).on('click', '#add-blue', function(){
+				callback({color:'blue'});
+			});
+			$(document).on('click', '#add-green', function(){
+				callback({color:'green'});
+			});
+
+			$(document).on('click', '#btn-clear', function(){
+				ctx.blue = ctx.green = 0;
+				renderRatio();
+				log('Clear request.');
+			});
+
+			$(document).on('click', '#btn-start', function(){
+				function request(){
+					function success(res, status, xhr){
+						console.log(res, xhr.response);
+						renderTheme(res);
+					}
+
+					function error(xhr, status, err){
+						renderTheme();
+					}
+
+					/*
+					$.ajax({
+						url: 'https://jsonplaceholder.typicode.com/posts/1',
+						dataType: 'jsonp',
+						success: wrapper
+					});
+					*/
+					/*
+					 * jquery.js@ jQuery.ajaxTransport
+					 * 
+					 * http://json2jsonp.com/
+					 * https://jsonp.afeld.me/
+					 */
+					$.ajax({
+						//url: 'http://169.56.99.56:30778/home?a=1',
+						url: 'https://jsonplaceholder.typicode.com/posts/1',
+						dataType: 'jsonp',
+						success: success,
+						error: error
+					});
+				}
+
+				log('Start requet.');
+				ctx.loop = setInterval(request, ctx.delay);
+			});
+			$(document).on('click', '#btn-stop', function(){
+				if(ctx.loop){
+					clearInterval(ctx.loop);
+					ctx.loop = undefined;
+					log('Stop request.');
+				}
+			});
+
+			renderRatio();
+		});
+	</script>
+
+
+	<main class="container">
+		<div class="row">
+			<div class="col s12">
+				<h3 class="header">Blue-Green Test Page</h3>
+				<nav>
+					<div class="nav-wrapper grey target">
+						<div class="col s12">
+							<a href="#!" class="breadcrumb">Main</a>
+							<a href="#!" class="breadcrumb">Theme</a>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col s8">
+				<div class="card">
+					<div class="card-content">
+						<span class="card-title">Log</span>
+						<pre>
+							<code class="bash console"></code>
+						</pre>
+					</div>
+					<div class="card-action">
+						<a href="#" id="btn-start">Start</a>
+						<a href="#" id="btn-stop">Stop</a>
+						<!--
+						<a href="#" id="add-blue">Blue</a>
+						<a href="#" id="add-green">Green</a>
+						-->
+					</div>
+				</div>
+			</div>
+
+			<div class="col s4">
+				<div class="card">
+					<div class="card-content">
+						<span class="card-title">Ratio</span>
+						<div class="row">
+							<div class="col s6 box blue" id="box-blue"></div>
+							<div class="col s6 box green" id="box-green"></div>
+						</div>
+					</div>
+					<div class="card-action">
+						<a href="#" id="btn-clear">Clear</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div id="theme" class="grey"></div>
+</body>
+</html>
