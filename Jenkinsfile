@@ -1,5 +1,4 @@
 echo '--------------------------------------------------------------------'
-/*
 def extractProperties(obj) {
     obj.getClass()
        .declaredFields
@@ -8,7 +7,6 @@ def extractProperties(obj) {
            [field.name, obj."$field.name"]
        }
 }
-*/
 
 /*
 println '--------------------------------------------------------------------'
