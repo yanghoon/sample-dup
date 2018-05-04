@@ -13,7 +13,8 @@ println '--------------------------------------------------------------------'
 node {
     echo '--------------------------------------------------------------------'
     println '--------------------------------------------------------------------'
-    println scm.properties
+    // https://github.com/jenkinsci/script-security-plugin/blob/master/src/main/resources/org/jenkinsci/plugins/scriptsecurity/sandbox/whitelists/blacklist
+    //println scm.properties
 }
 /*
 println '--------------------------------------------------------------------'
