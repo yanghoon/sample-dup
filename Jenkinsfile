@@ -1,3 +1,4 @@
+println '--------------------------------------------------------------------'
 def extractProperties(obj) {
     obj.getClass()
        .declaredFields
@@ -10,5 +11,7 @@ def extractProperties(obj) {
 println '--------------------------------------------------------------------'
 println scm
 
+println '--------------------------------------------------------------------'
 def result = [*:extractProperties(scm)]
 println result
+println '--------------------------------------------------------------------'
