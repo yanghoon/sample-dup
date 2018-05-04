@@ -7,6 +7,7 @@ def extractProperties(obj) {
        }
 }
 
+println '--------------------------------------------------------------------'
 println scm
 
 def result = [*:extractProperties(scm)]
